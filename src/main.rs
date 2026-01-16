@@ -113,6 +113,30 @@ fn search_files(files: &[String], regex: &Regex) -> Vec<Match> {
     matches
 }
 
+/// Builds an index of newline positions for byte-to-line conversion
+/// Returns a Vec where index[i] = byte offset of line i (0-indexed)
+fn build_line_index(content: &str) -> Vec<usize> {
+    let mut line_starts = vec![0]; // Line 0 starts at byte 0
+
+    for (byte_offset, ch) in content.char_indices() {
+        if ch == '\n' {
+            // Next line starts after this newline
+            line_starts.push(byte_offset + 1);
+        }
+    }
+
+    line_starts
+}
+
+/// Given a byte offset and line index, returns the line number (1-indexed)
+fn byte_to_line(byte_offset: usize, line_index: &[usize]) -> usize {
+    // Find the last line that starts at or before our byte offset
+    match line_index.binary_search(&byte_offset) {
+        Ok(i) => i + 1,      // Exact match - byte is at line start
+        Err(i) => i,         // byte is in line i (i lines start before it)
+    }
+}
+
 fn main() {
     let args = cli::Cli::parse();
 
