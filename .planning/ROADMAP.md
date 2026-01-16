@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Line/Column Calculation** - Convert byte offsets to line/col positions (Complete: 2026-01-16)
 - [x] **Phase 5: Context Extraction** - Extract before/after context for each match (Complete: 2026-01-16)
 - [x] **Phase 6: JSON Output Schema** - Structured output with execution_id (Complete: 2026-01-16)
-- [ ] **Phase 7: Deterministic Ordering** - Sorted, limited, repeatable results
+- [x] **Phase 7: Deterministic Ordering** - Sorted, limited, repeatable results (Complete: 2026-01-16)
 - [ ] **Phase 8: CLI Interface Polish** - Help text, error handling, --json flag
 - [ ] **Phase 9: Testing & Validation** - Test suite for determinism and edge cases
 - [ ] **Phase 10: Documentation & Release** - README, examples, packaging
@@ -102,9 +102,9 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 07-01: Sort results by path then byte_start
-- [ ] 07-02: Implement limit functionality
-- [ ] 07-03: Verify ordering consistency across runs
+- [x] 07-01: Sort results by path then byte_start
+- [x] 07-02: Implement limit functionality
+- [x] 07-03: Verify ordering consistency across runs
 
 ### Phase 8: CLI Interface Polish
 **Goal**: Help text, error handling, --json flag
@@ -152,7 +152,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Line/Column Calculation | 3/3 | Complete | 2026-01-16 |
 | 5. Context Extraction | 3/3 | Complete | 2026-01-16 |
 | 6. JSON Output Schema | 3/3 | Complete | 2026-01-16 |
-| 7. Deterministic Ordering | 0/3 | Not started | - |
+| 7. Deterministic Ordering | 3/3 | Complete | 2026-01-16 |
 | 8. CLI Interface Polish | 0/3 | Not started | - |
 | 9. Testing & Validation | 0/3 | Not started | - |
 | 10. Documentation & Release | 0/3 | Not started | - |
