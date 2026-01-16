@@ -518,4 +518,49 @@ mod tests {
         assert_eq!(limited[0].byte_start, 0);   // First match
         assert_eq!(limited[4].byte_start, 40);  // Fifth match
     }
+
+    // ========== Phase 09-01 Task 1: Binary file detection tests ==========
+
+    #[test]
+    fn test_is_text_file_with_null_bytes() {
+        use std::io::Write;
+        let temp_dir = std::env::temp_dir();
+        let file_path = temp_dir.join("test_binary.bin");
+        let mut file = std::fs::File::create(&file_path).unwrap();
+        file.write_all(b"\x00\x01\x02\x03\x04").unwrap();
+
+        assert!(!is_text_file(&file_path));
+        std::fs::remove_file(&file_path).unwrap();
+    }
+
+    #[test]
+    fn test_is_text_file_with_valid_utf8() {
+        use std::io::Write;
+        let temp_dir = std::env::temp_dir();
+        let file_path = temp_dir.join("test_text.txt");
+        let mut file = std::fs::File::create(&file_path).unwrap();
+        file.write_all(b"Hello, world!").unwrap();
+
+        assert!(is_text_file(&file_path));
+        std::fs::remove_file(&file_path).unwrap();
+    }
+
+    #[test]
+    fn test_is_text_file_with_invalid_utf8() {
+        use std::io::Write;
+        let temp_dir = std::env::temp_dir();
+        let file_path = temp_dir.join("test_invalid.txt");
+        let mut file = std::fs::File::create(&file_path).unwrap();
+        // Invalid UTF-8 sequence
+        file.write_all(b"\xFF\xFE Hello").unwrap();
+
+        assert!(!is_text_file(&file_path));
+        std::fs::remove_file(&file_path).unwrap();
+    }
+
+    #[test]
+    fn test_is_text_file_nonexistent() {
+        let path = Path::new("/nonexistent/file/that/does/not/exist");
+        assert!(!is_text_file(path));
+    }
 }
