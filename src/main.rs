@@ -9,6 +9,7 @@ struct Match {
     file: String,
     byte_start: usize,
     byte_end: usize,
+    matched_text: String,
 }
 
 fn is_text_file(path: &Path) -> bool {
@@ -92,15 +93,14 @@ fn search_files(files: &[String], regex: &Regex) -> Vec<Match> {
     let mut matches = Vec::new();
 
     for file_path in files {
-        // Read file content
         match std::fs::read_to_string(file_path) {
             Ok(content) => {
-                // Find all regex matches with byte offsets
                 for mat in regex.find_iter(&content) {
                     matches.push(Match {
                         file: file_path.clone(),
                         byte_start: mat.start(),
                         byte_end: mat.end(),
+                        matched_text: mat.as_str().to_string(),
                     });
                 }
             }
@@ -134,6 +134,14 @@ fn main() {
     // Search files for pattern matches
     let matches = search_files(&files, &regex);
     eprintln!("Found {} matches", matches.len());
+
+    // Debug: print first few matches to verify
+    for (i, m) in matches.iter().take(3).enumerate() {
+        eprintln!("  Match {}: {} at {}:{} - \"{}\"",
+            i + 1, m.file, m.byte_start, m.byte_end,
+            m.matched_text.chars().take(50).collect::<String>()
+        );
+    }
 
     // Phase 4: Line/column calculation
     // TODO: Convert byte offsets to line/col positions
