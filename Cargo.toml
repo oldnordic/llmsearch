@@ -1,7 +1,12 @@
 [package]
 name = "llmsearch"
-version = "0.1.0"
-edition = "2024"
+version = "1.0.0"
+edition = "2021"
+description = "Deterministic code search with LLM-optimized JSON output"
+license = "MIT"
+authors = ["llmsearch contributors"]
+keywords = ["search", "cli", "llm", "code-search"]
+repository = "https://github.com/yourusername/llmsearch"
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }  # CLI argument parsing
