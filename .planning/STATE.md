@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Deterministic, structured search output that LLMs can rely on without guessing.
-**Current focus:** Phase 5 — Context Extraction
+**Current focus:** Phase 8 — CLI Polish
 
 ## Current Position
 
-Phase: 5 of 10 (Context Extraction)
-Plan: 3 of 3 in current phase
-Status: Complete
-Last activity: 2026-01-16 — Completed 05-03-PLAN.md
+Phase: 8 of 10 (CLI Polish)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-01-16 — Completed 08-01-PLAN.md
 
-Progress: ██████████ 100% (Phase 5 complete)
+Progress: ██████████ 70% (16 of 23 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
-- Average duration: 1.33 min
-- Total execution time: 0.33 hours
+- Total plans completed: 16
+- Average duration: 1.31 min
+- Total execution time: 0.35 hours
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: ██████████ 100% (Phase 5 complete)
 | 03-pattern-matching | 3 | 4 min | 1.33 min |
 | 04-line-column-calc | 3 | 5 min | 1.67 min |
 | 05-context-extraction | 3 | 4 min | 1.33 min |
+| 08-cli-polish | 1 | 1 min | 1.00 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (2 min), 04-03 (2 min), 05-01 (1 min), 05-02 (1 min), 05-03 (1 min)
+- Last 5 plans: 04-02 (2 min), 04-03 (2 min), 05-01 (1 min), 05-02 (1 min), 05-03 (1 min), 08-01 (1 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -84,6 +85,10 @@ Recent decisions affecting current work:
 | 04-02 | chars().count() for Unicode column counting | Correctly handles multi-byte UTF-8 sequences |
 | 04-03 | Unit tests for UTF-8 verification with emoji and CJK | Ensures multi-byte chars counted as single columns |
 | 04-03 | Fixed test expectation (byte 13 not 12) | Corrected arithmetic error in test plan |
+| 08-01 | Included JSON output schema in --help text | Sets expectations for 08-02 implementation |
+| 08-01 | Added regex syntax reference link for pattern arg | Helps users construct valid search patterns |
+| 08-01 | Explained .gitignore integration for root dir | Clarifies automatic file filtering behavior |
+| 08-01 | Comprehensive CLI help with 4 usage examples | Improves UX for both humans and LLMs |
 
 ### Deferred Issues
 
@@ -100,7 +105,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 05-03-PLAN.md (Context extraction with edge case handling)
+Stopped at: Completed 08-01-PLAN.md (CLI help text enhancement)
 Resume file: None
 
-Phase 5 complete - before/after context extraction fully implemented with comprehensive edge case handling. All three plans (05-01, 05-02, 05-03) completed successfully. Match struct now has: file, byte_start, byte_end, matched_text, line_number, column_number, context_before, context_after. Ready for Phase 6 (JSON output schema).
+Phase 8 in progress - CLI help text enhanced with comprehensive documentation, examples, and JSON schema. First plan (08-01) completed successfully in 1 minute. Ready for 08-02 (--json flag implementation).
