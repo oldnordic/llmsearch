@@ -222,6 +222,14 @@ fn main() {
     let execution_id = Uuid::new_v4().to_string();
     eprintln!("Execution ID: {}", execution_id);
 
+    // Validate pattern is non-empty
+    if args.pattern.is_empty() {
+        eprintln!("Error: Pattern cannot be empty");
+        eprintln!("Usage: llmsearch -p '<pattern>'");
+        eprintln!("Provide a regex pattern to search for");
+        std::process::exit(1);
+    }
+
     // Phase 2: File walking & ignore
     let files = walk_files(&args.root, &args.glob);
     eprintln!("Found {} files", files.len());
@@ -232,6 +240,8 @@ fn main() {
         Ok(re) => re,
         Err(e) => {
             eprintln!("Error: Invalid regex pattern: {}", e);
+            eprintln!("Pattern: '{}'", args.pattern);
+            eprintln!("See: https://docs.rs/regex/latest/regex/#syntax");
             std::process::exit(1);
         }
     };
