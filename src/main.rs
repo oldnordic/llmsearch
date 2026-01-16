@@ -563,4 +563,48 @@ mod tests {
         let path = Path::new("/nonexistent/file/that/does/not/exist");
         assert!(!is_text_file(path));
     }
+
+    // ========== Phase 09-01 Task 2: Line index edge case tests ==========
+
+    #[test]
+    fn test_build_line_index_empty_string() {
+        let line_index = build_line_index("");
+        assert_eq!(line_index, vec![0]); // Only line 0 at byte 0
+    }
+
+    #[test]
+    fn test_build_line_index_no_newlines() {
+        let line_index = build_line_index("Hello world");
+        assert_eq!(line_index, vec![0]); // Single line
+    }
+
+    #[test]
+    fn test_build_line_index_multiple_newlines() {
+        let line_index = build_line_index("a\nb\nc");
+        assert_eq!(line_index, vec![0, 2, 4]); // Lines at 0, 2, 4
+    }
+
+    #[test]
+    fn test_build_line_index_trailing_newline() {
+        let line_index = build_line_index("a\nb\n");
+        assert_eq!(line_index, vec![0, 2, 4]); // Empty line at end
+    }
+
+    #[test]
+    fn test_byte_to_line_at_exact_match() {
+        let line_index = vec![0, 5, 10, 15];
+        assert_eq!(byte_to_line(5, &line_index), 2); // Exact match at line 2
+    }
+
+    #[test]
+    fn test_byte_to_line_at_end_of_file() {
+        let line_index = vec![0, 5, 10];
+        assert_eq!(byte_to_line(14, &line_index), 3); // In line 3 (index 2 + 1)
+    }
+
+    #[test]
+    fn test_byte_to_line_at_byte_zero() {
+        let line_index = vec![0, 10, 20];
+        assert_eq!(byte_to_line(0, &line_index), 1); // First line
+    }
 }
