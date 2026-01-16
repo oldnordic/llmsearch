@@ -17,7 +17,7 @@ None
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Project Scaffolding** - Cargo project setup with CLI argument structure (Complete: 2026-01-16)
-- [ ] **Phase 2: File Walking & Ignore** - Gitignore-aware directory traversal
+- [x] **Phase 2: File Walking & Ignore** - Gitignore-aware directory traversal (Complete: 2026-01-16)
 - [ ] **Phase 3: Pattern Matching** - Regex search with byte offset tracking
 - [ ] **Phase 4: Line/Column Calculation** - Convert byte offsets to line/col positions
 - [ ] **Phase 5: Context Extraction** - Extract before/after context for each match
@@ -48,8 +48,8 @@ Plans:
 
 Plans:
 - [x] 02-01: Integrate ignore crate for file walking
-- [ ] 02-02: Implement glob pattern filtering
-- [ ] 02-03: Handle UTF-8 text file detection
+- [x] 02-02: Implement glob pattern filtering
+- [x] 02-03: Handle UTF-8 text file detection
 
 ### Phase 3: Pattern Matching
 **Goal**: Regex search with byte offset tracking
@@ -147,7 +147,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Project Scaffolding | 3/3 | Complete | 2026-01-16 |
-| 2. File Walking & Ignore | 1/3 | In progress | - |
+| 2. File Walking & Ignore | 3/3 | Complete | 2026-01-16 |
 | 3. Pattern Matching | 0/3 | Not started | - |
 | 4. Line/Column Calculation | 0/3 | Not started | - |
 | 5. Context Extraction | 0/3 | Not started | - |
