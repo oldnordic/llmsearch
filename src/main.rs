@@ -5,6 +5,12 @@ use ignore::Walk;
 use regex::Regex;
 use std::path::Path;
 
+struct Match {
+    file: String,
+    byte_start: usize,
+    byte_end: usize,
+}
+
 fn is_text_file(path: &Path) -> bool {
     // Try to read first few bytes to check for binary content
     match std::fs::read(path) {
@@ -82,6 +88,31 @@ fn walk_files(root: &str, globs: &[String]) -> Vec<String> {
     files
 }
 
+fn search_files(files: &[String], regex: &Regex) -> Vec<Match> {
+    let mut matches = Vec::new();
+
+    for file_path in files {
+        // Read file content
+        match std::fs::read_to_string(file_path) {
+            Ok(content) => {
+                // Find all regex matches with byte offsets
+                for mat in regex.find_iter(&content) {
+                    matches.push(Match {
+                        file: file_path.clone(),
+                        byte_start: mat.start(),
+                        byte_end: mat.end(),
+                    });
+                }
+            }
+            Err(e) => {
+                eprintln!("Warning: Could not read {}: {}", file_path, e);
+            }
+        }
+    }
+
+    matches
+}
+
 fn main() {
     let args = cli::Cli::parse();
 
@@ -99,8 +130,10 @@ fn main() {
         }
     };
     eprintln!("Pattern compiled successfully");
-    // TODO: Search file contents with regex, track byte offsets
-    let _matches: Vec<String> = vec![];
+
+    // Search files for pattern matches
+    let matches = search_files(&files, &regex);
+    eprintln!("Found {} matches", matches.len());
 
     // Phase 4: Line/column calculation
     // TODO: Convert byte offsets to line/col positions
