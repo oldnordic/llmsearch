@@ -220,7 +220,9 @@ fn main() {
 
     // Phase 6: Generate execution_id
     let execution_id = Uuid::new_v4().to_string();
-    eprintln!("Execution ID: {}", execution_id);
+    if !args.json {
+        eprintln!("Execution ID: {}", execution_id);
+    }
 
     // Validate pattern is non-empty
     if args.pattern.is_empty() {
@@ -243,7 +245,9 @@ fn main() {
 
     // Phase 2: File walking & ignore
     let files = walk_files(&args.root, &args.glob);
-    eprintln!("Found {} files", files.len());
+    if !args.json {
+        eprintln!("Found {} files", files.len());
+    }
 
     // Phase 3: Pattern matching
     // Compile the regex pattern
@@ -256,10 +260,15 @@ fn main() {
             std::process::exit(1);
         }
     };
-    eprintln!("Pattern compiled successfully");
+    if !args.json {
+        eprintln!("Pattern compiled successfully");
+    }
 
     // Search files for pattern matches
     let mut matches = search_files(&files, &regex);
+    if !args.json {
+        eprintln!("Found {} matches", matches.len());
+    }
 
     // Handle "no matches" gracefully
     if matches.is_empty() {
@@ -288,27 +297,31 @@ fn main() {
         std::process::exit(0);
     }
 
-    eprintln!("Found {} matches", matches.len());
-
     // Phase 7: Deterministic ordering
     // Sort by file path, then byte_start for consistent output
     matches.sort();
-    eprintln!("Matches sorted deterministically");
+    if !args.json {
+        eprintln!("Matches sorted deterministically");
+    }
 
     // Apply limit (from CLI args, default 100)
     let total_found = matches.len();
     let limit = args.limit.min(total_found);
     let limited_matches: Vec<Match> = matches.into_iter().take(limit).collect();
-    eprintln!("Returning {} of {} matches (limit: {})",
-        limited_matches.len(), total_found, args.limit);
+    if !args.json {
+        eprintln!("Returning {} of {} matches (limit: {})",
+            limited_matches.len(), total_found, args.limit);
+    }
 
     // Debug: print first few matches with context
-    for (i, m) in limited_matches.iter().take(3).enumerate() {
-        eprintln!("  Match {}: {} (id: {})", i + 1, m.file, m.match_id);
-        eprintln!("    {}:{}:{}", m.file, m.line_number, m.column_number);
-        eprintln!("    Before: \"{}\"", m.context_before);
-        eprintln!("    Match:  \"{}\"", m.matched_text.chars().take(30).collect::<String>());
-        eprintln!("    After:  \"{}\"", m.context_after);
+    if !args.json {
+        for (i, m) in limited_matches.iter().take(3).enumerate() {
+            eprintln!("  Match {}: {} (id: {})", i + 1, m.file, m.match_id);
+            eprintln!("    {}:{}:{}", m.file, m.line_number, m.column_number);
+            eprintln!("    Before: \"{}\"", m.context_before);
+            eprintln!("    Match:  \"{}\"", m.matched_text.chars().take(30).collect::<String>());
+            eprintln!("    After:  \"{}\"", m.context_after);
+        }
     }
 
     // Phase 6: JSON output
@@ -354,16 +367,18 @@ fn main() {
     // TODO: Error handling, --json flag logic
 
     // UTF-8 handling verification
-    eprintln!();
-    eprintln!("UTF-8 handling: Column numbers count Unicode characters, not bytes");
-    eprintln!("  Multi-byte characters (emoji, accented letters) count as 1 column");
+    if !args.json {
+        eprintln!();
+        eprintln!("UTF-8 handling: Column numbers count Unicode characters, not bytes");
+        eprintln!("  Multi-byte characters (emoji, accented letters) count as 1 column");
 
-    // Temporary: print args to show CLI works
-    eprintln!();
-    eprintln!("llmsearch scaffolding complete!");
-    eprintln!("Args: {:#?}", args);
-    eprintln!();
-    eprintln!("Next: Implement phases 2-10 to add functionality.");
+        // Temporary: print args to show CLI works
+        eprintln!();
+        eprintln!("llmsearch scaffolding complete!");
+        eprintln!("Args: {:#?}", args);
+        eprintln!();
+        eprintln!("Next: Implement phases 2-10 to add functionality.");
+    }
 }
 
 #[cfg(test)]
