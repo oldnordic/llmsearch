@@ -7,7 +7,7 @@ use serde::Serialize;
 use std::path::Path;
 use uuid::Uuid;
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct Match {
     match_id: String,
     file: String,
@@ -216,8 +216,8 @@ fn main() {
 
     // Debug: print first few matches with context
     for (i, m) in matches.iter().take(3).enumerate() {
-        eprintln!("  Match {}: {}:{}:{}",
-            i + 1, m.file, m.line_number, m.column_number);
+        eprintln!("  Match {}: {} (id: {})", i + 1, m.file, m.match_id);
+        eprintln!("    {}:{}:{}", m.file, m.line_number, m.column_number);
         eprintln!("    Before: \"{}\"", m.context_before);
         eprintln!("    Match:  \"{}\"", m.matched_text.chars().take(30).collect::<String>());
         eprintln!("    After:  \"{}\"", m.context_after);
@@ -230,8 +230,27 @@ fn main() {
     // TODO: Extract before/after context for each match
 
     // Phase 6: JSON output
-    // TODO: Generate execution_id (UUID)
-    // TODO: Serialize to JSON schema
+    let output = SearchOutput {
+        execution_id: execution_id.clone(),
+        pattern: args.pattern.clone(),
+        matches: matches.clone(),
+        match_count: matches.len(),
+    };
+
+    // Serialize to JSON (pretty-printed for now, compact in Phase 8 with --json flag)
+    match serde_json::to_string_pretty(&output) {
+        Ok(json) => {
+            // For now, print to stderr for debugging
+            // Phase 8 will handle --json flag and stdout routing
+            eprintln!();
+            eprintln!("JSON Output:");
+            eprintln!("{}", json);
+        }
+        Err(e) => {
+            eprintln!("Error serializing to JSON: {}", e);
+            std::process::exit(1);
+        }
+    }
 
     // Phase 7: Deterministic ordering
     // TODO: Sort by path then byte_start
