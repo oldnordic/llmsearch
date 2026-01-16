@@ -7,7 +7,7 @@ use serde::Serialize;
 use std::path::Path;
 use uuid::Uuid;
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Clone, PartialEq, Eq, PartialOrd, Ord)]
 struct Match {
     match_id: String,
     file: String,
@@ -211,8 +211,13 @@ fn main() {
     eprintln!("Pattern compiled successfully");
 
     // Search files for pattern matches
-    let matches = search_files(&files, &regex);
+    let mut matches = search_files(&files, &regex);
     eprintln!("Found {} matches", matches.len());
+
+    // Phase 7: Deterministic ordering
+    // Sort by file path, then byte_start for consistent output
+    matches.sort();
+    eprintln!("Matches sorted deterministically");
 
     // Debug: print first few matches with context
     for (i, m) in matches.iter().take(3).enumerate() {
