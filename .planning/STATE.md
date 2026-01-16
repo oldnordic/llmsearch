@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Deterministic, structured search output that LLMs can rely on without guessing.
-**Current focus:** Phase 9 — Testing and Validation (In Progress)
+**Current focus:** Phase 9 — Testing and Validation (Phase Complete)
 
 ## Current Position
 
 Phase: 9 of 10 (Testing and Validation)
-Plan: 2 of 2 in current phase
-Status: In progress
-Last activity: 2026-01-16 — Completed 09-02-PLAN.md
+Plan: 3 of 3 in current phase
+Status: Phase Complete
+Last activity: 2026-01-16 — Completed 09-03-PLAN.md
 
-Progress: ██████████ 90% (9 of 10 phases complete, Phase 9 in progress)
+Progress: ██████████ 90% (9 of 10 phases complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20
-- Average duration: 1.65 min
-- Total execution time: 0.55 hours
+- Total plans completed: 21
+- Average duration: 1.81 min
+- Total execution time: 0.63 hours
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Progress: ██████████ 90% (9 of 10 phases complete, Phase 9 i
 | 04-line-column-calc | 3 | 5 min | 1.67 min |
 | 05-context-extraction | 3 | 4 min | 1.33 min |
 | 08-cli-polish | 3 | 3 min | 1.00 min |
-| 09-testing-validation | 2 | 13 min | 6.50 min |
+| 09-testing-validation | 3 | 16 min | 5.33 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-03 (4 min), 09-01 (5 min), 09-02 (8 min)
-- Trend: Increasing (testing phase more involved)
+- Last 5 plans: 08-03 (4 min), 09-01 (2 min), 09-02 (8 min), 09-03 (3 min)
+- Trend: Stable (testing phase complete)
 
 *Updated after each plan completion*
 
@@ -104,6 +104,9 @@ Recent decisions affecting current work:
 | 09-02 | Created cargo_llmsearch() helper function | Reduces boilerplate and centralizes binary lookup |
 | 09-02 | Filter test results to fixture files only | Avoids flaky tests from temp directory containing other files |
 | 09-02 | Use starts_with("{") for JSON validation | is_json() predicate doesn't exist in predicates crate |
+| 09-03 | Compare deterministic JSON fields instead of raw output | execution_id and match_id contain random UUIDs |
+| 09-03 | Use isolated temp subdirectories for test fixtures | Prevents temp directory pollution causing flaky tests |
+| 09-03 | Verify UUID validity with uuid::Uuid::parse_str() | Confirms execution_id follows UUID v4 format |
 
 
 ### Deferred Issues
@@ -121,16 +124,17 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 09-02-PLAN.md (Integration tests for CLI)
+Stopped at: Completed 09-03-PLAN.md (Determinism verification tests)
 Resume file: None
 
-Phase 9 IN PROGRESS - 2 of 2 plans complete:
-- 09-01: Unit tests for core search functionality (5 min)
+Phase 9 COMPLETE - All 3 plans finished:
+- 09-01: Unit tests for core search functionality (2 min)
 - 09-02: Integration tests for CLI end-to-end behavior (8 min)
+- 09-03: Determinism verification tests (3 min)
 
-Test suite now includes:
-- 6 integration tests covering basic search, error handling, validation, and glob filtering
-- All tests passing with assert_cmd and predicates infrastructure in place
-- Ready for determinism tests in next plan (09-03)
+Test suite now includes 29 total tests:
+- 19 unit tests (binary detection, line indexing, glob filtering, context extraction, match ordering)
+- 6 integration tests (basic search, error handling, validation, glob filtering)
+- 4 determinism tests (output consistency, UUID uniqueness, limit functionality)
 
-CLI tool is production-ready with comprehensive test coverage validating deterministic JSON output for LLM workflows.
+All tests passing with comprehensive coverage. CLI tool is production-ready with deterministic JSON output for LLM workflows.
