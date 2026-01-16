@@ -2,6 +2,27 @@ mod cli;
 
 use clap::Parser;
 use ignore::Walk;
+use std::path::Path;
+
+fn is_text_file(path: &Path) -> bool {
+    // Try to read first few bytes to check for binary content
+    match std::fs::read(path) {
+        Ok(contents) => {
+            // Check first 8KB for null bytes (common in binary files)
+            let sample_size = 8192.min(contents.len());
+            let sample = &contents[..sample_size];
+
+            // If we find a null byte, it's likely binary
+            if sample.contains(&0u8) {
+                return false;
+            }
+
+            // Check for UTF-8 validity
+            std::str::from_utf8(sample).is_ok()
+        }
+        Err(_) => false, // Can't read file, skip it
+    }
+}
 
 fn walk_files(root: &str, globs: &[String]) -> Vec<String> {
     let walker = Walk::new(root);
@@ -13,6 +34,11 @@ fn walk_files(root: &str, globs: &[String]) -> Vec<String> {
                 if let Some(path) = entry.path().to_str() {
                     // Only include files, not directories
                     if !entry.file_type().map_or(false, |ft| ft.is_file()) {
+                        continue;
+                    }
+
+                    // Skip binary files
+                    if !is_text_file(entry.path()) {
                         continue;
                     }
 
