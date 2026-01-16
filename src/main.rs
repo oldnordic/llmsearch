@@ -3,8 +3,10 @@ mod cli;
 use clap::Parser;
 use ignore::Walk;
 use regex::Regex;
+use serde::Serialize;
 use std::path::Path;
 
+#[derive(Serialize)]
 struct Match {
     file: String,
     byte_start: usize,
@@ -14,6 +16,14 @@ struct Match {
     column_number: usize,
     context_before: String,
     context_after: String,
+}
+
+#[derive(Serialize)]
+struct SearchOutput {
+    execution_id: String,
+    pattern: String,
+    matches: Vec<Match>,
+    match_count: usize,
 }
 
 fn is_text_file(path: &Path) -> bool {
