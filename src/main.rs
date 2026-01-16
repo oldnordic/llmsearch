@@ -270,18 +270,30 @@ fn main() {
         match_count: limited_matches.len(),
     };
 
-    // Serialize to JSON (pretty-printed for now, compact in Phase 8 with --json flag)
-    match serde_json::to_string_pretty(&output) {
-        Ok(json) => {
-            // For now, print to stderr for debugging
-            // Phase 8 will handle --json flag and stdout routing
-            eprintln!();
-            eprintln!("JSON Output:");
-            eprintln!("{}", json);
+    // Output routing based on --json flag
+    if args.json {
+        // JSON mode: compact output to stdout, no debug messages
+        match serde_json::to_string(&output) {
+            Ok(json) => {
+                println!("{}", json);
+            }
+            Err(e) => {
+                eprintln!("Error serializing to JSON: {}", e);
+                std::process::exit(1);
+            }
         }
-        Err(e) => {
-            eprintln!("Error serializing to JSON: {}", e);
-            std::process::exit(1);
+    } else {
+        // Debug mode: pretty JSON to stderr with execution details
+        eprintln!();
+        eprintln!("JSON Output:");
+        match serde_json::to_string_pretty(&output) {
+            Ok(json) => {
+                eprintln!("{}", json);
+            }
+            Err(e) => {
+                eprintln!("Error serializing to JSON: {}", e);
+                std::process::exit(1);
+            }
         }
     }
 
