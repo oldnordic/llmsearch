@@ -47,7 +47,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 02-01: Integrate ignore crate for file walking
+- [x] 02-01: Integrate ignore crate for file walking
 - [ ] 02-02: Implement glob pattern filtering
 - [ ] 02-03: Handle UTF-8 text file detection
 
@@ -147,7 +147,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Project Scaffolding | 3/3 | Complete | 2026-01-16 |
-| 2. File Walking & Ignore | 0/3 | Not started | - |
+| 2. File Walking & Ignore | 1/3 | In progress | - |
 | 3. Pattern Matching | 0/3 | Not started | - |
 | 4. Line/Column Calculation | 0/3 | Not started | - |
 | 5. Context Extraction | 0/3 | Not started | - |
