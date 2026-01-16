@@ -607,4 +607,96 @@ mod tests {
         let line_index = vec![0, 10, 20];
         assert_eq!(byte_to_line(0, &line_index), 1); // First line
     }
+
+    // ========== Phase 09-01 Task 3: Glob pattern filtering tests ==========
+
+    #[test]
+    fn test_walk_files_filters_by_extension() {
+        use std::io::Write;
+        let temp_dir = std::env::temp_dir();
+
+        // Create a unique subdirectory for this test
+        let test_subdir = temp_dir.join("llmsearch_test_glob1");
+        std::fs::create_dir_all(&test_subdir).unwrap();
+
+        // Create test files
+        let rust_file = test_subdir.join("test.rs");
+        let toml_file = test_subdir.join("test.toml");
+        let txt_file = test_subdir.join("test.txt");
+        std::fs::File::create(&rust_file).unwrap().write_all(b"fn main() {}").unwrap();
+        std::fs::File::create(&toml_file).unwrap().write_all(b"[package]").unwrap();
+        std::fs::File::create(&txt_file).unwrap().write_all(b"text").unwrap();
+
+        let test_dir_str = test_subdir.to_str().unwrap();
+        let files = walk_files(test_dir_str, &["*.rs".to_string()]);
+
+        // Should only find .rs files
+        assert_eq!(files.len(), 1);
+        assert!(files[0].ends_with("test.rs"));
+
+        // Cleanup
+        std::fs::remove_file(&rust_file).unwrap();
+        std::fs::remove_file(&toml_file).unwrap();
+        std::fs::remove_file(&txt_file).unwrap();
+        std::fs::remove_dir(&test_subdir).unwrap();
+    }
+
+    #[test]
+    fn test_walk_files_multiple_globs() {
+        use std::io::Write;
+        let temp_dir = std::env::temp_dir();
+
+        // Create a unique subdirectory for this test
+        let test_subdir = temp_dir.join("llmsearch_test_glob2");
+        std::fs::create_dir_all(&test_subdir).unwrap();
+
+        let rust_file = test_subdir.join("test.rs");
+        let toml_file = test_subdir.join("test.toml");
+        let txt_file = test_subdir.join("test.txt");
+        std::fs::File::create(&rust_file).unwrap().write_all(b"fn main() {}").unwrap();
+        std::fs::File::create(&toml_file).unwrap().write_all(b"[package]").unwrap();
+        std::fs::File::create(&txt_file).unwrap().write_all(b"text").unwrap();
+
+        let test_dir_str = test_subdir.to_str().unwrap();
+        let globs = vec!["*.rs".to_string(), "*.toml".to_string()];
+        let files = walk_files(test_dir_str, &globs);
+
+        // Should find both .rs and .toml files
+        assert_eq!(files.len(), 2);
+        let has_rust = files.iter().any(|f| f.ends_with("test.rs"));
+        let has_toml = files.iter().any(|f| f.ends_with("test.toml"));
+        assert!(has_rust && has_toml);
+
+        // Cleanup
+        std::fs::remove_file(&rust_file).unwrap();
+        std::fs::remove_file(&toml_file).unwrap();
+        std::fs::remove_file(&txt_file).unwrap();
+        std::fs::remove_dir(&test_subdir).unwrap();
+    }
+
+    #[test]
+    fn test_walk_files_no_globs_returns_all() {
+        use std::io::Write;
+        let temp_dir = std::env::temp_dir();
+
+        // Create a unique subdirectory for this test
+        let test_subdir = temp_dir.join("llmsearch_test_glob3");
+        std::fs::create_dir_all(&test_subdir).unwrap();
+
+        let rust_file = test_subdir.join("test.rs");
+        let txt_file = test_subdir.join("test.txt");
+        std::fs::File::create(&rust_file).unwrap().write_all(b"fn main() {}").unwrap();
+        std::fs::File::create(&txt_file).unwrap().write_all(b"text").unwrap();
+
+        let test_dir_str = test_subdir.to_str().unwrap();
+        let files = walk_files(test_dir_str, &[]);
+
+        // Should find all text files
+        assert_eq!(files.len(), 2);
+
+        // Cleanup
+        std::fs::remove_file(&rust_file).unwrap();
+        std::fs::remove_file(&txt_file).unwrap();
+        std::fs::remove_dir(&test_subdir).unwrap();
+    }
 }
