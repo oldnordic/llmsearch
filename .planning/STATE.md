@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-16)
 ## Current Position
 
 Phase: 4 of 10 (Line/Column Calculation)
-Plan: 1 of 2 in current phase
+Plan: 2 of 2 in current phase
 Status: In progress
-Last activity: 2026-01-16 — Completed 04-01-PLAN.md
+Last activity: 2026-01-16 — Completed 04-02-PLAN.md
 
-Progress: ██████████ 80%
+Progress: ██████████ 100% (Phase 4 complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
-- Average duration: 1.20 min
-- Total execution time: 0.20 hours
+- Total plans completed: 11
+- Average duration: 1.27 min
+- Total execution time: 0.23 hours
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: ██████████ 80%
 | 01-project-scaffolding | 3 | 4 min | 1.33 min |
 | 02-file-walking | 3 | 4 min | 1.33 min |
 | 03-pattern-matching | 3 | 4 min | 1.33 min |
-| 04-line-column-calc | 1 | 1 min | 1.00 min |
+| 04-line-column-calc | 2 | 3 min | 1.50 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (3 min), 03-01 (1 min), 03-02 (1 min), 03-03 (2 min), 04-01 (1 min)
+- Last 5 plans: 03-02 (1 min), 03-03 (2 min), 04-01 (1 min), 04-02 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -77,6 +77,10 @@ Recent decisions affecting current work:
 | 04-01 | 1-indexed line numbers for human readability | Line 1 instead of line 0 matches editor conventions |
 | 04-01 | binary_search for O(log n) lookup | Efficient line number lookup from byte offset |
 | 04-01 | char_indices() for UTF-8 byte offset iteration | Correctly handles multi-byte UTF-8 characters |
+| 04-02 | Column numbers count Unicode codepoints not bytes | Handles multi-byte UTF-8 correctly (e.g., Chinese chars) |
+| 04-02 | Line index rebuilt per file | Each file has different line structure |
+| 04-02 | 1-indexed columns for grep format compatibility | Column 1 instead of column 0 matches editor conventions |
+| 04-02 | chars().count() for Unicode column counting | Correctly handles multi-byte UTF-8 sequences |
 
 ### Deferred Issues
 
@@ -93,7 +97,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 04-01-PLAN.md (Build line index from file content for byte-to-line conversion)
+Stopped at: Completed 04-02-PLAN.md (Line/column calculation with UTF-8 support)
 Resume file: None
 
-Phase 4 plan 1 complete - line index builder and byte-to-line conversion functions created. Ready for 04-02 (column calculation).
+Phase 4 complete - line/column position tracking fully implemented with Unicode support. Ready for Phase 5 (context extraction).
