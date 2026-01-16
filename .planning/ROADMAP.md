@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Project Scaffolding** - Cargo project setup with CLI argument structure (Complete: 2026-01-16)
 - [x] **Phase 2: File Walking & Ignore** - Gitignore-aware directory traversal (Complete: 2026-01-16)
 - [x] **Phase 3: Pattern Matching** - Regex search with byte offset tracking (Complete: 2026-01-16)
-- [ ] **Phase 4: Line/Column Calculation** - Convert byte offsets to line/col positions
+- [x] **Phase 4: Line/Column Calculation** - Convert byte offsets to line/col positions (Complete: 2026-01-16)
 - [ ] **Phase 5: Context Extraction** - Extract before/after context for each match
 - [ ] **Phase 6: JSON Output Schema** - Structured output with execution_id
 - [ ] **Phase 7: Deterministic Ordering** - Sorted, limited, repeatable results
@@ -69,9 +69,9 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 04-01: Build line index from file content
-- [ ] 04-02: Convert byte offsets to line/col
-- [ ] 04-03: Handle multi-byte UTF-8 characters correctly
+- [x] 04-01: Build line index from file content
+- [x] 04-02: Convert byte offsets to line/col
+- [x] 04-03: Handle multi-byte UTF-8 characters correctly
 
 ### Phase 5: Context Extraction
 **Goal**: Extract before/after context for each match
@@ -149,7 +149,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Project Scaffolding | 3/3 | Complete | 2026-01-16 |
 | 2. File Walking & Ignore | 3/3 | Complete | 2026-01-16 |
 | 3. Pattern Matching | 3/3 | Complete | 2026-01-16 |
-| 4. Line/Column Calculation | 0/3 | Not started | - |
+| 4. Line/Column Calculation | 3/3 | Complete | 2026-01-16 |
 | 5. Context Extraction | 0/3 | Not started | - |
 | 6. JSON Output Schema | 0/3 | Not started | - |
 | 7. Deterministic Ordering | 0/3 | Not started | - |
