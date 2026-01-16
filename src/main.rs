@@ -5,9 +5,11 @@ use ignore::Walk;
 use regex::Regex;
 use serde::Serialize;
 use std::path::Path;
+use uuid::Uuid;
 
 #[derive(Serialize)]
 struct Match {
+    match_id: String,
     file: String,
     byte_start: usize,
     byte_end: usize,
@@ -130,6 +132,7 @@ fn search_files(files: &[String], regex: &Regex) -> Vec<Match> {
                     let context_after = content[byte_end..context_end.min(content.len())].to_string();
 
                     matches.push(Match {
+                        match_id: Uuid::new_v4().to_string(),
                         file: file_path.clone(),
                         byte_start,
                         byte_end,
@@ -187,6 +190,10 @@ fn byte_to_column(byte_offset: usize, line_start: usize, content: &str) -> usize
 
 fn main() {
     let args = cli::Cli::parse();
+
+    // Phase 6: Generate execution_id
+    let execution_id = Uuid::new_v4().to_string();
+    eprintln!("Execution ID: {}", execution_id);
 
     // Phase 2: File walking & ignore
     let files = walk_files(&args.root, &args.glob);
