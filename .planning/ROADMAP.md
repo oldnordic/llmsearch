@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Pattern Matching** - Regex search with byte offset tracking (Complete: 2026-01-16)
 - [x] **Phase 4: Line/Column Calculation** - Convert byte offsets to line/col positions (Complete: 2026-01-16)
 - [x] **Phase 5: Context Extraction** - Extract before/after context for each match (Complete: 2026-01-16)
-- [ ] **Phase 6: JSON Output Schema** - Structured output with execution_id
+- [x] **Phase 6: JSON Output Schema** - Structured output with execution_id (Complete: 2026-01-16)
 - [ ] **Phase 7: Deterministic Ordering** - Sorted, limited, repeatable results
 - [ ] **Phase 8: CLI Interface Polish** - Help text, error handling, --json flag
 - [ ] **Phase 9: Testing & Validation** - Test suite for determinism and edge cases
@@ -91,9 +91,9 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 06-01: Define JSON output structures
-- [ ] 06-02: Generate UUID for execution_id
-- [ ] 06-03: Serialize matches to JSON format
+- [x] 06-01: Define JSON output structures
+- [x] 06-02: Generate UUID for execution_id
+- [x] 06-03: Serialize matches to JSON format
 
 ### Phase 7: Deterministic Ordering
 **Goal**: Sorted, limited, repeatable results
@@ -151,7 +151,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Pattern Matching | 3/3 | Complete | 2026-01-16 |
 | 4. Line/Column Calculation | 3/3 | Complete | 2026-01-16 |
 | 5. Context Extraction | 3/3 | Complete | 2026-01-16 |
-| 6. JSON Output Schema | 0/3 | Not started | - |
+| 6. JSON Output Schema | 3/3 | Complete | 2026-01-16 |
 | 7. Deterministic Ordering | 0/3 | Not started | - |
 | 8. CLI Interface Polish | 0/3 | Not started | - |
 | 9. Testing & Validation | 0/3 | Not started | - |
