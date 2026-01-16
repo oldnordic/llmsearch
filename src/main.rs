@@ -10,6 +10,8 @@ struct Match {
     byte_start: usize,
     byte_end: usize,
     matched_text: String,
+    line_number: usize,
+    column_number: usize,
 }
 
 fn is_text_file(path: &Path) -> bool {
@@ -95,12 +97,22 @@ fn search_files(files: &[String], regex: &Regex) -> Vec<Match> {
     for file_path in files {
         match std::fs::read_to_string(file_path) {
             Ok(content) => {
+                // Build line index for this file
+                let line_index = build_line_index(&content);
+
                 for mat in regex.find_iter(&content) {
+                    let byte_start = mat.start();
+                    let line_num = byte_to_line(byte_start, &line_index);
+                    let line_start_byte = line_index[line_num - 1];
+                    let col_num = byte_to_column(byte_start, line_start_byte, &content);
+
                     matches.push(Match {
                         file: file_path.clone(),
-                        byte_start: mat.start(),
+                        byte_start,
                         byte_end: mat.end(),
                         matched_text: mat.as_str().to_string(),
+                        line_number: line_num,
+                        column_number: col_num,
                     });
                 }
             }
@@ -137,6 +149,17 @@ fn byte_to_line(byte_offset: usize, line_index: &[usize]) -> usize {
     }
 }
 
+/// Given a byte offset and line start, returns the column (1-indexed)
+/// Counts Unicode codepoints, not bytes, for correct column numbers
+fn byte_to_column(byte_offset: usize, line_start: usize, content: &str) -> usize {
+    // Get the slice from line start to our byte offset
+    let line_prefix = &content[line_start..byte_offset];
+
+    // Count characters (codepoints), not bytes
+    // This handles multi-byte UTF-8 correctly
+    line_prefix.chars().count() + 1  // +1 for 1-indexed columns
+}
+
 fn main() {
     let args = cli::Cli::parse();
 
@@ -161,15 +184,14 @@ fn main() {
 
     // Debug: print first few matches to verify
     for (i, m) in matches.iter().take(3).enumerate() {
-        eprintln!("  Match {}: {} at {}:{} - \"{}\"",
-            i + 1, m.file, m.byte_start, m.byte_end,
+        eprintln!("  Match {}: {}:{}:{} - \"{}\"",
+            i + 1, m.file, m.line_number, m.column_number,
             m.matched_text.chars().take(50).collect::<String>()
         );
     }
 
     // Phase 4: Line/column calculation
-    // TODO: Convert byte offsets to line/col positions
-    // TODO: Handle multi-byte UTF-8 correctly
+    // Line/column numbers calculated using byte_to_line and byte_to_column
 
     // Phase 5: Context extraction
     // TODO: Extract before/after context for each match
