@@ -1,243 +1,129 @@
 # llmsearch
 
-**Deterministic, structured search for LLM workflows**
+A simple code search tool written in Rust as a learning project.
 
-llmsearch is an LLM-native code search tool that provides structured JSON output designed for AI agent workflows. Think of it as ripgrep with deterministic, queryable results that LLMs can rely on without guessing.
+## What It Does
 
-## What is llmsearch?
+Searches text files recursively using regex patterns and outputs results in JSON format.
 
-Traditional CLI tools (ripgrep, grep) output unstructured text designed for human operators. LLMs consuming this output must parse streams, maintain state in memory, and lose that state after context compaction — leading to guesswork.
+## What's Actually Tested
 
-llmsearch fixes this by returning structured JSON with:
-- **Exact byte offsets** for precise code navigation
-- **Line/column numbers** for editor integration
-- **Execution IDs** (UUID v4) for auditability and retrieval
-- **Deterministic ordering** — same inputs always yield identical ordered results
-- **Match-specific IDs** for referencing individual results
+This project has 29 tests covering:
 
-Every match includes context before/after the matched text, making it easy for LLMs to understand surrounding code without additional file reads.
+**Unit tests (19):**
+- `is_text_file`: null byte detection, valid/invalid UTF-8, nonexistent files
+- `build_line_index`: empty strings, no newlines, multiple newlines, trailing newlines
+- `byte_to_line`: byte zero, exact match, end of file
+- `walk_files`: extension filtering, multiple globs, no globs
+- Context extraction edge cases
+- Match ordering
+- Limit functionality
+- UTF-8 column calculation
 
-## Key Features
+**Integration tests (6):**
+- JSON output validation
+- Error handling: nonexistent directory, empty pattern, zero limit
+- No matches case
+- Glob filtering
 
-- **Regex pattern matching** with full Rust regex syntax
-- **File glob filtering** (e.g., `*.rs`, `*.toml`, `test_*.rs`)
-- **Result limiting** for large codebases
-- **.gitignore-aware** file walking (respects your ignore rules)
-- **UTF-8 text file support** (skips binary files automatically)
-- **JSON output mode** for structured consumption
-- **Deterministic ordering** sorted by file path, then byte offset
-- **Execution tracking** with unique IDs for every search run
+**Determinism tests (4):**
+- Same inputs produce identical outputs
+- Sorting consistency (file path, then byte offset)
+- Unique execution IDs per run
+- Limit returns first N sorted results
 
 ## Installation
 
-### From source
-
 ```bash
-# Install locally
-cargo install --path .
-
-# Or build release binary
+# Build from source
 cargo build --release
-# Binary at target/release/llmsearch
+
+# Install binary to PATH
+cp target/release/llmsearch ~/.local/bin/
 ```
 
-### Requirements
-
-- Rust 2024 edition or later
-- Linux-only (initial release)
-
-## Quick Start
+## Usage
 
 ```bash
-# Basic search in current directory
-llmsearch -p 'fn main'
+# Basic search (current directory)
+llmsearch -p "pattern"
 
-# Search specific directory with file filter
-llmsearch -r ./src -p 'struct.*Error' -g '*.rs'
+# Search specific directory
+llmsearch -r ./src -p "pattern"
 
-# JSON output for LLM consumption
-llmsearch -p 'TODO:' --json
+# JSON output
+llmsearch -p "pattern" --json
 
-# Multiple file types
-llmsearch -p 'test' -g '*.rs' -g '*.toml'
+# Filter by file type (glob)
+llmsearch -p "pattern" -g "*.rs"
 
-# Limit results in large codebase
-llmsearch -p 'async fn' -l 50
+# Limit results
+llmsearch -p "pattern" -l 10
 ```
 
-## JSON Output Schema
+## CLI Options
 
-When using `--json`, llmsearch outputs structured JSON to stdout:
+| Option | Description |
+|--------|-------------|
+| `-r, --root <DIR>` | Root directory to search (default: current directory) |
+| `-p, --pattern <REGEX>` | Regex pattern to search for (required) |
+| `-g, --glob <GLOB>` | File glob filter (can be used multiple times) |
+| `-l, --limit <N>` | Maximum matches to return (default: 100) |
+| `--json` | Output JSON to stdout |
+| `-h, --help` | Print help |
+
+## JSON Output Format
 
 ```json
 {
-  "execution_id": "550e8400-e29b-41d4-a716-446655440000",
-  "pattern": "fn main",
+  "execution_id": "uuid-v4",
+  "pattern": "search_pattern",
   "matches": [
     {
-      "match_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "file": "src/main.rs",
-      "byte_start": 120,
-      "byte_end": 132,
-      "matched_text": "fn main() {",
-      "line_number": 10,
-      "column_number": 4,
-      "context_before": "pub ",
-      "context_after": "    println!(\"Hello\");\n}"
+      "match_id": "uuid-v4",
+      "file": "path/to/file",
+      "byte_start": 0,
+      "byte_end": 10,
+      "matched_text": "match",
+      "line_number": 1,
+      "column_number": 1,
+      "context_before": "before",
+      "context_after": "after"
     }
   ],
   "match_count": 1
 }
 ```
 
-### Field descriptions
+## Known Limitations
 
-- **execution_id**: UUID v4 identifying this specific search run (useful for caching/auditing)
-- **pattern**: The regex pattern that was searched
-- **matches**: Array of match objects, sorted deterministically by file path then byte_start
-- **match_id**: UUID v4 for each individual match (for referencing specific results)
-- **file**: Relative path from search root
-- **byte_start/byte_end**: Exact byte offsets in the file (UTF-8 aware)
-- **matched_text**: The actual text that matched the pattern
-- **line_number**: 1-indexed line number where match occurs
-- **column_number**: 1-indexed column number (Unicode codepoints, not bytes)
-- **context_before**: Text immediately before the match
-- **context_after**: Text immediately after the match (includes newline)
-- **match_count**: Total number of matches returned
+- **Linux-only** - Not tested on other platforms
+- **UTF-8 only** - Skips binary files automatically
+- **No Windows/macOS support**
+- **Not published to crates.io** - Build from source only
+- **Learning project** - Not production-ready
 
-## CLI Reference
-
-```
-llmsearch [OPTIONS]
-
-OPTIONS:
-    -r, --root <DIR>          Root directory to search [default: .]
-                              Uses .gitignore for skipping ignored files
-
-    -p, --pattern <REGEX>     Regular expression pattern to search for
-                              Uses Rust regex syntax (see link below)
-
-    -g, --glob <GLOB>         File glob patterns [can be specified multiple times]
-                              Examples: '*.rs', '*.toml', 'test_*.rs'
-                              If not specified, searches all text files
-
-    -l, --limit <N>           Maximum matches to return [default: 100]
-                              Results sorted by file path, then byte offset
-
-    --json                    Output JSON to stdout
-                              Suppresses debug output and human-readable messages
-
-    -h, --help                Print help
-    -V, --version             Print version
-```
-
-**Regex syntax:** https://docs.rs/regex/latest/regex/#syntax
-
-## Examples
-
-### 1. Basic pattern search
-
-Search for function definitions in current directory:
+## Development
 
 ```bash
-llmsearch -p 'fn \w+'
+# Run all tests
+cargo test
+
+# Run with debug output
+./target/debug/llmsearch -p "test"
+
+# Build release binary
+cargo build --release
 ```
 
-Output (human-readable mode):
-```
-Searching in "." for pattern: "fn \w+"
-Found 3 matches
+## Dependencies
 
-src/main.rs:1:1: fn main
-src/cli.rs:4:1: fn parse_args
-src/utils.rs:10:5: fn helper
-```
-
-### 2. Search specific directory with glob filter
-
-Find error structs in Rust files:
-
-```bash
-llmsearch -r ./src -p 'struct.*Error' -g '*.rs'
-```
-
-### 3. JSON output for LLM consumption
-
-Pipe to jq for processing:
-
-```bash
-llmsearch -p 'TODO:' --json | jq '.matches[] | {file, line, text}'
-```
-
-### 4. Multiple file types
-
-Search across Rust and TOML files:
-
-```bash
-llmsearch -p 'version' -g '*.rs' -g '*.toml'
-```
-
-### 5. Limited results for large codebases
-
-Get top 50 async functions:
-
-```bash
-llmsearch -p 'async fn' -l 50
-```
-
-### 6. Complex regex with capture groups
-
-Find test functions with specific patterns:
-
-```bash
-llmsearch -p '#\[test\]\s+fn (test_|should_)'
-```
-
-## LLM Integration Notes
-
-### Why deterministic ordering matters
-
-When LLMs process search results, they need:
-1. **Stable references** — Match IDs allow LLMs to reference specific results in follow-up queries
-2. **Consistent ordering** — Same query always returns results in same order, enabling reliable indexing
-3. **Audit trails** — Execution IDs let LLMs cache results or verify they're working with current data
-
-Without these features, LLMs must:
-- Parse unstructured text (error-prone)
-- Maintain state in memory (lost after context compaction)
-- Guess about result order (unreliable)
-- Re-fetch files to verify changes (inefficient)
-
-llmsearch eliminates these problems by providing structured, auditable output designed for AI workflows.
-
-### Example workflow
-
-```bash
-# LLM searches for TODOs
-RESULT=$(llmsearch -p 'TODO:' --json)
-
-# LLM extracts execution_id for caching
-EXEC_ID=$(echo $RESULT | jq -r '.execution_id')
-
-# LLM processes matches deterministically
-echo $RESULT | jq '.matches[] | select(.file | endswith(".rs"))'
-```
-
-## .gitignore Integration
-
-llmsearch automatically respects `.gitignore` files in your project. Ignored files and directories are skipped during search, just like with `git ls-files`.
-
-To disable this behavior, search from a directory without a `.gitignore`, or modify your ignore rules.
+- `clap` 4.5 - CLI argument parsing
+- `ignore` 0.4 - .gitignore-aware file walking
+- `regex` 1.10 - Pattern matching
+- `serde/serde_json` 1.0 - JSON serialization
+- `uuid` 1.6 - Execution/match IDs
 
 ## License
 
-MIT
-
-## Contributing
-
-This is the first of 4 planned LLM-native tools. Each tool lives in its own repository to keep codebases small, focused, and easy to maintain.
-
-Related tools (planned):
-- llm-ast-search: AST-aware code navigation
-- llm-transform: Structured code modification
-- llm-discover: Project structure analysis
+GPL-3.0
