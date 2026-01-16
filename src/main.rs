@@ -260,6 +260,34 @@ fn main() {
 
     // Search files for pattern matches
     let mut matches = search_files(&files, &regex);
+
+    // Handle "no matches" gracefully
+    if matches.is_empty() {
+        if args.json {
+            // JSON mode: Always output valid JSON (empty array is valid)
+            let output = SearchOutput {
+                execution_id,
+                pattern: args.pattern.clone(),
+                matches: vec![],
+                match_count: 0,
+            };
+            match serde_json::to_string(&output) {
+                Ok(json) => println!("{}", json),
+                Err(e) => {
+                    eprintln!("Error serializing to JSON: {}", e);
+                    std::process::exit(1);
+                }
+            }
+        } else {
+            eprintln!("No matches found for pattern '{}'", args.pattern);
+            eprintln!("Searched {} file(s)", files.len());
+            if !args.glob.is_empty() {
+                eprintln!("Filtered by glob(s): {:?}", args.glob);
+            }
+        }
+        std::process::exit(0);
+    }
+
     eprintln!("Found {} matches", matches.len());
 
     // Phase 7: Deterministic ordering
