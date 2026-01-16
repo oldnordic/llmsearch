@@ -230,6 +230,17 @@ fn main() {
         std::process::exit(1);
     }
 
+    // Validate limit is reasonable
+    if args.limit == 0 {
+        eprintln!("Error: Limit must be at least 1 (got: 0)");
+        std::process::exit(1);
+    }
+    if args.limit > 100_000 {
+        eprintln!("Warning: Limit is very large ({}), may cause memory issues", args.limit);
+        eprintln!("Consider using a smaller limit or filtering with --glob");
+        // Continue execution - just a warning
+    }
+
     // Phase 2: File walking & ignore
     let files = walk_files(&args.root, &args.glob);
     eprintln!("Found {} files", files.len());
