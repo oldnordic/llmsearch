@@ -207,6 +207,17 @@ fn byte_to_column(byte_offset: usize, line_start: usize, content: &str) -> usize
 fn main() {
     let args = cli::Cli::parse();
 
+    // Validate root directory exists
+    let root_path = Path::new(&args.root);
+    if !root_path.exists() {
+        eprintln!("Error: Root directory does not exist: {}", args.root);
+        std::process::exit(1);
+    }
+    if !root_path.is_dir() {
+        eprintln!("Error: Root path is not a directory: {}", args.root);
+        std::process::exit(1);
+    }
+
     // Phase 6: Generate execution_id
     let execution_id = Uuid::new_v4().to_string();
     eprintln!("Execution ID: {}", execution_id);
