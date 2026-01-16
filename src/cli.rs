@@ -46,23 +46,29 @@ OUTPUT FORMAT (JSON):
     }
 ")]
 pub struct Cli {
-    /// Root directory to search (default: current directory)
+    /// Root directory to search recursively (default: current directory)
+    /// Uses .gitignore for skipping ignored files/directories
     #[arg(short, long, default_value = ".")]
     pub root: String,
 
-    /// Regex pattern to search for
+    /// Regular expression pattern to search for in file contents
+    /// Uses Rust regex syntax: https://docs.rs/regex/latest/regex/#syntax
     #[arg(short, long)]
     pub pattern: String,
 
-    /// File glob patterns (can be specified multiple times)
+    /// File glob patterns to filter search (can be specified multiple times)
+    /// Examples: '*.rs', '*.toml', 'test_*.rs'
+    /// If not specified, all text files are searched
     #[arg(short, long)]
     pub glob: Vec<String>,
 
-    /// Maximum number of results to return
+    /// Maximum number of matches to return (default: 100)
+    /// Results are sorted by file path, then byte offset before limiting
     #[arg(short, long, default_value = "100")]
     pub limit: usize,
 
-    /// Output results as JSON (structured format for LLMs)
+    /// Output results as JSON to stdout (structured format for LLMs)
+    /// When enabled, suppresses debug output and human-readable messages
     #[arg(long, default_value_t = false)]
     pub json: bool,
 }
