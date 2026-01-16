@@ -6,21 +6,45 @@ use ignore::Walk;
 fn walk_files(root: &str, globs: &[String]) -> Vec<String> {
     let walker = Walk::new(root);
 
-    // Filter by glob patterns if provided
-    if !globs.is_empty() {
-        // Build a combined glob filter
-        // For now, just collect all files - glob filtering comes in 02-02
-    }
-
     let mut files = Vec::new();
     for result in walker {
         match result {
             Ok(entry) => {
                 if let Some(path) = entry.path().to_str() {
                     // Only include files, not directories
-                    if entry.file_type().map_or(false, |ft| ft.is_file()) {
-                        files.push(path.to_string());
+                    if !entry.file_type().map_or(false, |ft| ft.is_file()) {
+                        continue;
                     }
+
+                    // Apply glob filtering if patterns provided
+                    if !globs.is_empty() {
+                        let filename = entry.file_name().to_string_lossy();
+                        let matches: bool = globs.iter().any(|g| {
+                            // Simple glob matching - check if filename matches pattern
+                            // Convert "*.rs" style glob to a simple check
+                            if g.starts_with("*.") {
+                                let ext = &g[2..];
+                                filename.ends_with(ext)
+                            } else if g.contains('*') {
+                                // Simple wildcard match
+                                let pattern = g.replace(".", "\\.").replace("*", ".*");
+                                if let Ok(re) = regex::Regex::new(&pattern) {
+                                    re.is_match(&filename)
+                                } else {
+                                    false
+                                }
+                            } else {
+                                // Exact match
+                                filename == *g
+                            }
+                        });
+
+                        if !matches {
+                            continue; // Skip files not matching any glob
+                        }
+                    }
+
+                    files.push(path.to_string());
                 }
             }
             Err(err) => {
