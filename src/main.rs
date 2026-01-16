@@ -219,8 +219,15 @@ fn main() {
     matches.sort();
     eprintln!("Matches sorted deterministically");
 
+    // Apply limit (from CLI args, default 100)
+    let total_found = matches.len();
+    let limit = args.limit.min(total_found);
+    let limited_matches: Vec<Match> = matches.into_iter().take(limit).collect();
+    eprintln!("Returning {} of {} matches (limit: {})",
+        limited_matches.len(), total_found, args.limit);
+
     // Debug: print first few matches with context
-    for (i, m) in matches.iter().take(3).enumerate() {
+    for (i, m) in limited_matches.iter().take(3).enumerate() {
         eprintln!("  Match {}: {} (id: {})", i + 1, m.file, m.match_id);
         eprintln!("    {}:{}:{}", m.file, m.line_number, m.column_number);
         eprintln!("    Before: \"{}\"", m.context_before);
@@ -228,18 +235,12 @@ fn main() {
         eprintln!("    After:  \"{}\"", m.context_after);
     }
 
-    // Phase 4: Line/column calculation
-    // Line/column numbers calculated using byte_to_line and byte_to_column
-
-    // Phase 5: Context extraction
-    // TODO: Extract before/after context for each match
-
     // Phase 6: JSON output
     let output = SearchOutput {
         execution_id: execution_id.clone(),
         pattern: args.pattern.clone(),
-        matches: matches.clone(),
-        match_count: matches.len(),
+        matches: limited_matches.clone(),
+        match_count: limited_matches.len(),
     };
 
     // Serialize to JSON (pretty-printed for now, compact in Phase 8 with --json flag)
