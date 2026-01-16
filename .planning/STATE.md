@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Deterministic, structured search output that LLMs can rely on without guessing.
-**Current focus:** Phase 8 — CLI Polish (COMPLETE)
+**Current focus:** Phase 9 — Testing and Validation (In Progress)
 
 ## Current Position
 
-Phase: 8 of 10 (CLI Polish)
-Plan: 3 of 3 in current phase
-Status: Complete
-Last activity: 2026-01-16 — Completed 08-03-PLAN.md
+Phase: 9 of 10 (Testing and Validation)
+Plan: 2 of 2 in current phase
+Status: In progress
+Last activity: 2026-01-16 — Completed 09-02-PLAN.md
 
-Progress: ██████████ 100% (Phase 8 complete)
+Progress: ██████████ 90% (9 of 10 phases complete, Phase 9 in progress)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
-- Average duration: 1.28 min
-- Total execution time: 0.38 hours
+- Total plans completed: 20
+- Average duration: 1.65 min
+- Total execution time: 0.55 hours
 
 **By Phase:**
 
@@ -33,10 +33,11 @@ Progress: ██████████ 100% (Phase 8 complete)
 | 04-line-column-calc | 3 | 5 min | 1.67 min |
 | 05-context-extraction | 3 | 4 min | 1.33 min |
 | 08-cli-polish | 3 | 3 min | 1.00 min |
+| 09-testing-validation | 2 | 13 min | 6.50 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (1 min), 05-02 (1 min), 05-03 (1 min), 08-02 (1 min), 08-03 (4 min)
-- Trend: Stable
+- Last 5 plans: 08-03 (4 min), 09-01 (5 min), 09-02 (8 min)
+- Trend: Increasing (testing phase more involved)
 
 *Updated after each plan completion*
 
@@ -98,6 +99,12 @@ Recent decisions affecting current work:
 | 08-03 | Limit validation: reject 0, warn >100k | Prevents meaningless searches and warns about memory issues |
 | 08-03 | No matches is not an error (exit 0) | Different behavior for JSON (empty array) vs debug (helpful message) |
 | 08-03 | All errors use eprintln() | Keeps stdout clean for JSON output |
+| 09-01 | Use assert_cmd for CLI integration testing | Provides Command::cargo_bin() for testing actual binary |
+| 09-01 | predicates crate for output validation | More expressive assertions than string matching |
+| 09-02 | Created cargo_llmsearch() helper function | Reduces boilerplate and centralizes binary lookup |
+| 09-02 | Filter test results to fixture files only | Avoids flaky tests from temp directory containing other files |
+| 09-02 | Use starts_with("{") for JSON validation | is_json() predicate doesn't exist in predicates crate |
+
 
 ### Deferred Issues
 
@@ -114,13 +121,16 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 08-03-PLAN.md (Comprehensive error handling)
+Stopped at: Completed 09-02-PLAN.md (Integration tests for CLI)
 Resume file: None
 
-Phase 8 COMPLETE - All three plans (08-01, 08-02, 08-03) finished successfully. CLI now has:
-- Comprehensive help text with examples and JSON schema documentation
-- --json flag for clean machine-readable output to stdout
-- Full input validation with clear error messages for all edge cases
-- Graceful handling of "no matches" state
+Phase 9 IN PROGRESS - 2 of 2 plans complete:
+- 09-01: Unit tests for core search functionality (5 min)
+- 09-02: Integration tests for CLI end-to-end behavior (8 min)
 
-The llmsearch CLI tool is now production-ready with deterministic JSON output that LLMs can rely on. All 10 phases from the original roadmap are complete.
+Test suite now includes:
+- 6 integration tests covering basic search, error handling, validation, and glob filtering
+- All tests passing with assert_cmd and predicates infrastructure in place
+- Ready for determinism tests in next plan (09-03)
+
+CLI tool is production-ready with comprehensive test coverage validating deterministic JSON output for LLM workflows.
