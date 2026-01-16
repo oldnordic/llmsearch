@@ -36,7 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: TBD
 
 Plans:
-- [ ] 01-01: Initialize Cargo project with dependencies
+- [x] 01-01: Initialize Cargo project with dependencies
 - [ ] 01-02: Define CLI argument structure with clap
 - [ ] 01-03: Create basic binary entry point
 
@@ -146,7 +146,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Project Scaffolding | 0/3 | Not started | - |
+| 1. Project Scaffolding | 1/3 | In progress | 2026-01-16 |
 | 2. File Walking & Ignore | 0/3 | Not started | - |
 | 3. Pattern Matching | 0/3 | Not started | - |
 | 4. Line/Column Calculation | 0/3 | Not started | - |
