@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-16)
 ## Current Position
 
 Phase: 3 of 10 (Pattern Matching)
-Plan: 2 of 2 in current phase
+Plan: 3 of 3 in current phase
 Status: Completed
-Last activity: 2026-01-16 — Completed 03-02-PLAN.md
+Last activity: 2026-01-16 — Completed 03-03-PLAN.md
 
-Progress: ██████████ 70%
+Progress: ██████████ 75%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 1.25 min
-- Total execution time: 0.17 hours
+- Total plans completed: 9
+- Average duration: 1.22 min
+- Total execution time: 0.18 hours
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: ██████████ 70%
 |-------|-------|-------|----------|
 | 01-project-scaffolding | 3 | 4 min | 1.33 min |
 | 02-file-walking | 3 | 4 min | 1.33 min |
-| 03-pattern-matching | 2 | 2 min | 1.00 min |
+| 03-pattern-matching | 3 | 4 min | 1.33 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (1 min), 02-02 (2 min), 02-03 (3 min), 03-01 (1 min), 03-02 (1 min)
+- Last 5 plans: 02-02 (2 min), 02-03 (3 min), 03-01 (1 min), 03-02 (1 min), 03-03 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -69,6 +69,9 @@ Recent decisions affecting current work:
 | 03-02 | search_files function with find_iter | Efficiently finds all regex matches with byte positions |
 | 03-02 | Graceful error handling for file reads | Skips unreadable files with warnings instead of crashing |
 | 03-02 | eprintln for file read warnings | Keeps stdout clean for JSON output (phase 6) |
+| 03-03 | Store matched_text as String in Match struct | Captures actual matched content for JSON output (phase 6) |
+| 03-03 | Use mat.as_str().to_string() for text extraction | Extracts matched text slice from regex match |
+| 03-03 | Limit debug output to 3 matches and 50 chars | Avoids console spam while providing verification samples |
 
 ### Deferred Issues
 
@@ -85,7 +88,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 03-02-PLAN.md (Search file contents with regex and collect byte offsets)
+Stopped at: Completed 03-03-PLAN.md (Add matched text extraction and verify byte offset accuracy)
 Resume file: None
 
-Phase 3 complete - regex compiled and file search implemented with byte offset tracking. Ready for phase 4 (line/column calculation).
+Phase 3 complete - regex compiled, file search implemented with byte offset tracking, and matched text extraction verified. Ready for phase 4 (line/column calculation).
