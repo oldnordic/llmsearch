@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Context Extraction** - Extract before/after context for each match (Complete: 2026-01-16)
 - [x] **Phase 6: JSON Output Schema** - Structured output with execution_id (Complete: 2026-01-16)
 - [x] **Phase 7: Deterministic Ordering** - Sorted, limited, repeatable results (Complete: 2026-01-16)
-- [ ] **Phase 8: CLI Interface Polish** - Help text, error handling, --json flag
+- [x] **Phase 8: CLI Interface Polish** - Help text, error handling, --json flag (Complete: 2026-01-16)
 - [ ] **Phase 9: Testing & Validation** - Test suite for determinism and edge cases
 - [ ] **Phase 10: Documentation & Release** - README, examples, packaging
 
@@ -114,8 +114,8 @@ Plans:
 
 Plans:
 - [x] 08-01: Add comprehensive help text
-- [ ] 08-02: Implement --json flag
-- [ ] 08-03: Add error handling for invalid inputs
+- [x] 08-02: Implement --json flag
+- [x] 08-03: Add error handling for invalid inputs
 
 ### Phase 9: Testing & Validation
 **Goal**: Test suite for determinism and edge cases
@@ -153,6 +153,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Context Extraction | 3/3 | Complete | 2026-01-16 |
 | 6. JSON Output Schema | 3/3 | Complete | 2026-01-16 |
 | 7. Deterministic Ordering | 3/3 | Complete | 2026-01-16 |
-| 8. CLI Interface Polish | 1/3 | In progress | 2026-01-16 |
+| 8. CLI Interface Polish | 3/3 | Complete | 2026-01-16 |
 | 9. Testing & Validation | 0/3 | Not started | - |
 | 10. Documentation & Release | 0/3 | Not started | - |
