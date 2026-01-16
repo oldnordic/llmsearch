@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: File Walking & Ignore** - Gitignore-aware directory traversal (Complete: 2026-01-16)
 - [x] **Phase 3: Pattern Matching** - Regex search with byte offset tracking (Complete: 2026-01-16)
 - [x] **Phase 4: Line/Column Calculation** - Convert byte offsets to line/col positions (Complete: 2026-01-16)
-- [ ] **Phase 5: Context Extraction** - Extract before/after context for each match
+- [x] **Phase 5: Context Extraction** - Extract before/after context for each match (Complete: 2026-01-16)
 - [ ] **Phase 6: JSON Output Schema** - Structured output with execution_id
 - [ ] **Phase 7: Deterministic Ordering** - Sorted, limited, repeatable results
 - [ ] **Phase 8: CLI Interface Polish** - Help text, error handling, --json flag
@@ -80,9 +80,9 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 05-01: Extract context before match
-- [ ] 05-02: Extract context after match
-- [ ] 05-03: Handle edge cases (start/end of file)
+- [x] 05-01: Extract context before match
+- [x] 05-02: Extract context after match
+- [x] 05-03: Handle edge cases (start/end of file)
 
 ### Phase 6: JSON Output Schema
 **Goal**: Structured output with execution_id and match_id
@@ -150,7 +150,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. File Walking & Ignore | 3/3 | Complete | 2026-01-16 |
 | 3. Pattern Matching | 3/3 | Complete | 2026-01-16 |
 | 4. Line/Column Calculation | 3/3 | Complete | 2026-01-16 |
-| 5. Context Extraction | 0/3 | Not started | - |
+| 5. Context Extraction | 3/3 | Complete | 2026-01-16 |
 | 6. JSON Output Schema | 0/3 | Not started | - |
 | 7. Deterministic Ordering | 0/3 | Not started | - |
 | 8. CLI Interface Polish | 0/3 | Not started | - |

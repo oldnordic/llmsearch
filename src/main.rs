@@ -12,6 +12,8 @@ struct Match {
     matched_text: String,
     line_number: usize,
     column_number: usize,
+    context_before: String,
+    context_after: String,
 }
 
 fn is_text_file(path: &Path) -> bool {
@@ -102,17 +104,30 @@ fn search_files(files: &[String], regex: &Regex) -> Vec<Match> {
 
                 for mat in regex.find_iter(&content) {
                     let byte_start = mat.start();
+                    let byte_end = mat.end();
                     let line_num = byte_to_line(byte_start, &line_index);
                     let line_start_byte = line_index[line_num - 1];
                     let col_num = byte_to_column(byte_start, line_start_byte, &content);
 
+                    // Extract context before match (up to 100 chars or line start)
+                    let context_start = line_start_byte.max(byte_start.saturating_sub(100));
+                    let context_before = content[context_start..byte_start].to_string();
+
+                    // Extract context after match (up to 100 chars or line end)
+                    let remaining_line = &content[byte_end..];
+                    let line_end_offset = remaining_line.find('\n').unwrap_or(remaining_line.len());
+                    let context_end = byte_end + line_end_offset.min(100);
+                    let context_after = content[byte_end..context_end.min(content.len())].to_string();
+
                     matches.push(Match {
                         file: file_path.clone(),
                         byte_start,
-                        byte_end: mat.end(),
+                        byte_end,
                         matched_text: mat.as_str().to_string(),
                         line_number: line_num,
                         column_number: col_num,
+                        context_before,
+                        context_after,
                     });
                 }
             }
@@ -182,12 +197,13 @@ fn main() {
     let matches = search_files(&files, &regex);
     eprintln!("Found {} matches", matches.len());
 
-    // Debug: print first few matches to verify
+    // Debug: print first few matches with context
     for (i, m) in matches.iter().take(3).enumerate() {
-        eprintln!("  Match {}: {}:{}:{} - \"{}\"",
-            i + 1, m.file, m.line_number, m.column_number,
-            m.matched_text.chars().take(50).collect::<String>()
-        );
+        eprintln!("  Match {}: {}:{}:{}",
+            i + 1, m.file, m.line_number, m.column_number);
+        eprintln!("    Before: \"{}\"", m.context_before);
+        eprintln!("    Match:  \"{}\"", m.matched_text.chars().take(30).collect::<String>());
+        eprintln!("    After:  \"{}\"", m.context_after);
     }
 
     // Phase 4: Line/column calculation
@@ -256,5 +272,32 @@ mod tests {
         assert_eq!(line_index[1], 2);
         // Line 3 starts at byte 13 (after "a\n世界🌍\n" = 1+1+6+4+1 = 13 bytes)
         assert_eq!(line_index[2], 13);
+    }
+
+    #[test]
+    fn test_context_extraction_edge_cases() {
+        let content = "fn main() {\n    println!(\"Hello\");\n}";
+
+        // Match at start of file
+        let re = Regex::new(r"fn main").unwrap();
+        let mat = re.find(content).unwrap();
+
+        let line_index = build_line_index(content);
+        let byte_start = mat.start();
+        let line_num = byte_to_line(byte_start, &line_index);
+        let line_start_byte = line_index[line_num - 1];
+
+        // Context before at start of file should be empty
+        let context_start = line_start_byte.max(byte_start.saturating_sub(100));
+        let context_before = &content[context_start..byte_start];
+        assert_eq!(context_before, "");  // Nothing before match at start
+
+        // Context after should capture "()" after "fn main"
+        let byte_end = mat.end();
+        let remaining_line = &content[byte_end..];
+        let line_end_offset = remaining_line.find('\n').unwrap_or(remaining_line.len());
+        let context_end = byte_end + line_end_offset.min(100);
+        let context_after = &content[byte_end..context_end.min(content.len())];
+        assert!(context_after.contains("()"));  // Should have "()" after
     }
 }
