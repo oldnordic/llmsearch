@@ -1,13 +1,42 @@
 mod cli;
 
 use clap::Parser;
+use ignore::Walk;
+
+fn walk_files(root: &str, globs: &[String]) -> Vec<String> {
+    let walker = Walk::new(root);
+
+    // Filter by glob patterns if provided
+    if !globs.is_empty() {
+        // Build a combined glob filter
+        // For now, just collect all files - glob filtering comes in 02-02
+    }
+
+    let mut files = Vec::new();
+    for result in walker {
+        match result {
+            Ok(entry) => {
+                if let Some(path) = entry.path().to_str() {
+                    // Only include files, not directories
+                    if entry.file_type().map_or(false, |ft| ft.is_file()) {
+                        files.push(path.to_string());
+                    }
+                }
+            }
+            Err(err) => {
+                eprintln!("Warning: {}", err);
+            }
+        }
+    }
+    files
+}
 
 fn main() {
     let args = cli::Cli::parse();
 
     // Phase 2: File walking & ignore
-    // TODO: Walk directory tree with .gitignore support
-    let _files: Vec<String> = vec![];
+    let files = walk_files(&args.root, &args.glob);
+    eprintln!("Found {} files", files.len());
 
     // Phase 3: Pattern matching
     // TODO: Search file contents with regex, track byte offsets
