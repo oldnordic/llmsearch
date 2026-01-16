@@ -2,6 +2,7 @@ mod cli;
 
 use clap::Parser;
 use ignore::Walk;
+use regex::Regex;
 use std::path::Path;
 
 fn is_text_file(path: &Path) -> bool {
@@ -89,6 +90,15 @@ fn main() {
     eprintln!("Found {} files", files.len());
 
     // Phase 3: Pattern matching
+    // Compile the regex pattern
+    let regex = match Regex::new(&args.pattern) {
+        Ok(re) => re,
+        Err(e) => {
+            eprintln!("Error: Invalid regex pattern: {}", e);
+            std::process::exit(1);
+        }
+    };
+    eprintln!("Pattern compiled successfully");
     // TODO: Search file contents with regex, track byte offsets
     let _matches: Vec<String> = vec![];
 
