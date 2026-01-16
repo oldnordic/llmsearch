@@ -7,7 +7,7 @@ use serde::Serialize;
 use std::path::Path;
 use uuid::Uuid;
 
-#[derive(Serialize, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Serialize, Clone, PartialEq, Eq)]
 struct Match {
     match_id: String,
     file: String,
@@ -18,6 +18,22 @@ struct Match {
     column_number: usize,
     context_before: String,
     context_after: String,
+}
+
+// Manual Ord implementation for deterministic sorting by file, then byte_start
+impl PartialOrd for Match {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Match {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        match self.file.cmp(&other.file) {
+            std::cmp::Ordering::Equal => self.byte_start.cmp(&other.byte_start),
+            other => other,
+        }
+    }
 }
 
 #[derive(Serialize)]
@@ -341,5 +357,78 @@ mod tests {
         let context_end = byte_end + line_end_offset.min(100);
         let context_after = &content[byte_end..context_end.min(content.len())];
         assert!(context_after.contains("()"));  // Should have "()" after
+    }
+
+    #[test]
+    fn test_match_ordering() {
+        let match_a = Match {
+            match_id: "id-a".to_string(),
+            file: "src/b.rs".to_string(),
+            byte_start: 100,
+            byte_end: 110,
+            matched_text: "foo".to_string(),
+            line_number: 5,
+            column_number: 1,
+            context_before: String::new(),
+            context_after: String::new(),
+        };
+
+        let match_b = Match {
+            match_id: "id-b".to_string(),
+            file: "src/a.rs".to_string(),  // Earlier path alphabetically
+            byte_start: 200,
+            byte_end: 210,
+            matched_text: "bar".to_string(),
+            line_number: 10,
+            column_number: 1,
+            context_before: String::new(),
+            context_after: String::new(),
+        };
+
+        let match_c = Match {
+            match_id: "id-c".to_string(),
+            file: "src/a.rs".to_string(),  // Same file as match_b
+            byte_start: 50,   // Earlier byte position
+            byte_end: 60,
+            matched_text: "baz".to_string(),
+            line_number: 2,
+            column_number: 1,
+            context_before: String::new(),
+            context_after: String::new(),
+        };
+
+        let mut matches = vec![match_a.clone(), match_b.clone(), match_c.clone()];
+        matches.sort();
+
+        // Should order: src/a.rs:50 (c), src/a.rs:200 (b), src/b.rs:100 (a)
+        assert_eq!(matches[0].file, "src/a.rs");
+        assert_eq!(matches[0].byte_start, 50);
+        assert_eq!(matches[1].file, "src/a.rs");
+        assert_eq!(matches[1].byte_start, 200);
+        assert_eq!(matches[2].file, "src/b.rs");
+        assert_eq!(matches[2].byte_start, 100);
+    }
+
+    #[test]
+    fn test_limit_functionality() {
+        let matches: Vec<Match> = (0..10).map(|i| Match {
+            match_id: format!("id-{}", i),
+            file: format!("file{}.rs", i / 3),
+            byte_start: i * 10,
+            byte_end: i * 10 + 3,
+            matched_text: "test".to_string(),
+            line_number: i,
+            column_number: 1,
+            context_before: String::new(),
+            context_after: String::new(),
+        }).collect();
+
+        // Apply limit of 5
+        let limit = 5;
+        let limited: Vec<Match> = matches.into_iter().take(limit).collect();
+
+        assert_eq!(limited.len(), 5);
+        assert_eq!(limited[0].byte_start, 0);   // First match
+        assert_eq!(limited[4].byte_start, 40);  // Fifth match
     }
 }
