@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-16)
 ## Current Position
 
 Phase: 4 of 10 (Line/Column Calculation)
-Plan: 2 of 2 in current phase
-Status: In progress
-Last activity: 2026-01-16 — Completed 04-02-PLAN.md
+Plan: 3 of 3 in current phase
+Status: Complete
+Last activity: 2026-01-16 — Completed 04-03-PLAN.md
 
 Progress: ██████████ 100% (Phase 4 complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Average duration: 1.27 min
-- Total execution time: 0.23 hours
+- Total plans completed: 12
+- Average duration: 1.33 min
+- Total execution time: 0.27 hours
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: ██████████ 100% (Phase 4 complete)
 | 01-project-scaffolding | 3 | 4 min | 1.33 min |
 | 02-file-walking | 3 | 4 min | 1.33 min |
 | 03-pattern-matching | 3 | 4 min | 1.33 min |
-| 04-line-column-calc | 2 | 3 min | 1.50 min |
+| 04-line-column-calc | 3 | 5 min | 1.67 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (1 min), 03-03 (2 min), 04-01 (1 min), 04-02 (2 min)
+- Last 5 plans: 03-02 (1 min), 03-03 (2 min), 04-01 (1 min), 04-02 (2 min), 04-03 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -81,6 +81,8 @@ Recent decisions affecting current work:
 | 04-02 | Line index rebuilt per file | Each file has different line structure |
 | 04-02 | 1-indexed columns for grep format compatibility | Column 1 instead of column 0 matches editor conventions |
 | 04-02 | chars().count() for Unicode column counting | Correctly handles multi-byte UTF-8 sequences |
+| 04-03 | Unit tests for UTF-8 verification with emoji and CJK | Ensures multi-byte chars counted as single columns |
+| 04-03 | Fixed test expectation (byte 13 not 12) | Corrected arithmetic error in test plan |
 
 ### Deferred Issues
 
@@ -97,7 +99,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 04-02-PLAN.md (Line/column calculation with UTF-8 support)
+Stopped at: Completed 04-03-PLAN.md (UTF-8 verification tests)
 Resume file: None
 
-Phase 4 complete - line/column position tracking fully implemented with Unicode support. Ready for Phase 5 (context extraction).
+Phase 4 complete - line/column position tracking fully implemented and tested with comprehensive UTF-8 support. All three plans (04-01, 04-02, 04-03) completed successfully. Ready for Phase 5 (context extraction).
