@@ -207,9 +207,54 @@ fn main() {
     // Phase 8: CLI polish
     // TODO: Error handling, --json flag logic
 
+    // UTF-8 handling verification
+    eprintln!();
+    eprintln!("UTF-8 handling: Column numbers count Unicode characters, not bytes");
+    eprintln!("  Multi-byte characters (emoji, accented letters) count as 1 column");
+
     // Temporary: print args to show CLI works
+    eprintln!();
     eprintln!("llmsearch scaffolding complete!");
     eprintln!("Args: {:#?}", args);
     eprintln!();
     eprintln!("Next: Implement phases 2-10 to add functionality.");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_utf8_column_calculation() {
+        // Test with multi-byte UTF-8 characters
+        let content = "Hello 世界🌍";  // "世界" = 6 bytes, "🌍" = 4 bytes
+        let line_index = build_line_index(content);
+
+        // "世" starts at byte 6
+        let byte_offset = 6;
+        let line_num = byte_to_line(byte_offset, &line_index);
+        let line_start = line_index[line_num - 1];
+        let col_num = byte_to_column(byte_offset, line_start, content);
+
+        assert_eq!(line_num, 1);
+        assert_eq!(col_num, 7);  // "Hello " (6 chars) + "世" (1 char) = position 7
+
+        // "🌍" starts at byte 12 (6 + 6 for "世界")
+        let byte_offset_emoji = 12;
+        let col_num_emoji = byte_to_column(byte_offset_emoji, line_start, content);
+        assert_eq!(col_num_emoji, 9);  // "Hello 世界" (8 chars) + "🌍" (1 char) = position 9
+    }
+
+    #[test]
+    fn test_line_index_multibyte() {
+        let content = "a\n世界🌍\nb";
+        let line_index = build_line_index(content);
+
+        // Line 1 starts at 0
+        assert_eq!(line_index[0], 0);
+        // Line 2 starts at byte 2 (after "a\n")
+        assert_eq!(line_index[1], 2);
+        // Line 3 starts at byte 13 (after "a\n世界🌍\n" = 1+1+6+4+1 = 13 bytes)
+        assert_eq!(line_index[2], 13);
+    }
 }
