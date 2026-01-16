@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Deterministic, structured search output that LLMs can rely on without guessing.
-**Current focus:** Phase 4 — Line/Column Calculation
+**Current focus:** Phase 5 — Context Extraction
 
 ## Current Position
 
-Phase: 4 of 10 (Line/Column Calculation)
+Phase: 5 of 10 (Context Extraction)
 Plan: 3 of 3 in current phase
 Status: Complete
-Last activity: 2026-01-16 — Completed 04-03-PLAN.md
+Last activity: 2026-01-16 — Completed 05-03-PLAN.md
 
-Progress: ██████████ 100% (Phase 4 complete)
+Progress: ██████████ 100% (Phase 5 complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 15
 - Average duration: 1.33 min
-- Total execution time: 0.27 hours
+- Total execution time: 0.33 hours
 
 **By Phase:**
 
@@ -31,9 +31,10 @@ Progress: ██████████ 100% (Phase 4 complete)
 | 02-file-walking | 3 | 4 min | 1.33 min |
 | 03-pattern-matching | 3 | 4 min | 1.33 min |
 | 04-line-column-calc | 3 | 5 min | 1.67 min |
+| 05-context-extraction | 3 | 4 min | 1.33 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (1 min), 03-03 (2 min), 04-01 (1 min), 04-02 (2 min), 04-03 (2 min)
+- Last 5 plans: 04-02 (2 min), 04-03 (2 min), 05-01 (1 min), 05-02 (1 min), 05-03 (1 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -99,7 +100,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 04-03-PLAN.md (UTF-8 verification tests)
+Stopped at: Completed 05-03-PLAN.md (Context extraction with edge case handling)
 Resume file: None
 
-Phase 4 complete - line/column position tracking fully implemented and tested with comprehensive UTF-8 support. All three plans (04-01, 04-02, 04-03) completed successfully. Ready for Phase 5 (context extraction).
+Phase 5 complete - before/after context extraction fully implemented with comprehensive edge case handling. All three plans (05-01, 05-02, 05-03) completed successfully. Match struct now has: file, byte_start, byte_end, matched_text, line_number, column_number, context_before, context_after. Ready for Phase 6 (JSON output schema).
